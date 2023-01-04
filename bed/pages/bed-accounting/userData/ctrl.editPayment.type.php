@@ -36,7 +36,7 @@ if ($action == 'trimestral_unsettled') {
                 $select_unpaid = mysqli_query($acc, "SELECT * FROM tbl_payments_status WHERE stud_no ='$row[stud_no]' AND payment_date = '$date_value'");
                 if (mysqli_num_rows($select_unpaid) != 0) {
                     } else {
-                        $select_unpaid = mysqli_query($acc, "UPDATE tbl_assessed_tf SET status = 'Unpaid' WHERE stud_no ='$row[stud_no]'");
+                        $select_unpaid = mysqli_query($acc, "UPDATE tbl_assessed_tf SET status = 'Unpaid' WHERE stud_no ='$row[stud_no]' AND ay_id = '$ay_id'");
                 }
                 break;
             } else {
@@ -104,7 +104,7 @@ if ($action == 'trimestral_unsettled') {
                 if (mysqli_num_rows($select_unpaid) != 0) {
                 
                     } else {
-                        $select_unpaid = mysqli_query($acc, "UPDATE tbl_assessed_tf SET status = 'Unpaid' WHERE stud_no ='$row[stud_no]'");
+                        $select_unpaid = mysqli_query($acc, "UPDATE tbl_assessed_tf SET status = 'Unpaid' WHERE stud_no ='$row[stud_no]' AND ay_id = '$ay_id'");
                 }
                 break;
             } else {
@@ -112,3 +112,5 @@ if ($action == 'trimestral_unsettled') {
         }
     }
 }
+
+header('location: ../edit.payment.type.php');

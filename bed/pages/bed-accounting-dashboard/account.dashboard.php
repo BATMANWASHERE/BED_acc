@@ -95,7 +95,7 @@ while ($row = mysqli_fetch_array($active_ay)) {
              <!-- small box -->
              <div class="small-box bg-info">
                  <div class="inner">
-                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_no) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id'") or die(mysqli_error($acc));
+                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_id) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id'") or die(mysqli_error($acc));
 
                         while ($row = mysqli_fetch_array($stud_count)) { ?>
                      <h3><?php echo $row['total_stud']; ?></h3>
@@ -114,7 +114,7 @@ while ($row = mysqli_fetch_array($active_ay)) {
              <!-- small box -->
              <div class="small-box bg-success">
                  <div class="inner">
-                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_no) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'cash' ") or die(mysqli_error($acc));
+                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_id) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'cash' ") or die(mysqli_error($acc));
                         while ($row = mysqli_fetch_array($stud_count)) { ?>
                      <h3><?php echo $row['total_stud']; ?></h3>
                      <?php } ?>
@@ -132,7 +132,7 @@ while ($row = mysqli_fetch_array($active_ay)) {
              <!-- small box -->
              <div class="small-box bg-success">
                  <div class="inner">
-                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_no) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'trimestral'") or die(mysqli_error($acc));
+                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_id) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'trimestral'") or die(mysqli_error($acc));
                         while ($row = mysqli_fetch_array($stud_count)) { ?>
                      <h3><?php echo $row['total_stud']; ?></h3>
                      <?php } ?>
@@ -150,7 +150,7 @@ while ($row = mysqli_fetch_array($active_ay)) {
              <!-- small box -->
              <div class="small-box bg-success">
                  <div class="inner">
-                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_no) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'quarterly'") or die(mysqli_error($acc));
+                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_id) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'quarterly'") or die(mysqli_error($acc));
                         while ($row = mysqli_fetch_array($stud_count)) { ?>
                      <h3><?php echo $row['total_stud']; ?></h3>
                      <?php } ?>
@@ -189,7 +189,7 @@ while ($row = mysqli_fetch_array($active_ay)) {
              <!-- small box -->
              <div class="small-box bg-success">
                  <div class="inner">
-                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_no) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'quarterly'") or die(mysqli_error($acc));
+                     <?php $stud_count = mysqli_query($acc, "SELECT COUNT(DISTINCT stud_id) as total_stud FROM tbl_assessed_tf WHERE ay_id = '$ay_id' AND payment = 'quarterly'") or die(mysqli_error($acc));
                         while ($row = mysqli_fetch_array($stud_count)) { ?>
                      <h3><?php echo $row['total_stud']; ?></h3>
                      <?php } ?>

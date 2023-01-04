@@ -61,20 +61,16 @@ date_default_timezone_set('Asia/Manila');
                                     <!-- form start -->
 
                                     <form action="" method="POST">
-                                        <?php
-                                            $select_status = mysqli_query ($acc, "SELECT * FROM tbl_payments_status
-                                            LEFT JOIN tbl_assessed_tf ON tbl_payments_status.assessed_id = tbl_assessed_tf.assessed_id
-                                            WHERE tbl_assessed_tf.payment = 'trimestral' AND tbl_assessed_tf.ay_id = '$ay_id'") or die (mysqli_error($acc)); // counts number of payments made based on user payments
-                                            while ($row = mysqli_fetch_array($select_status)) {
-                                            }
-
-
+                                        <div class="card-body">
+                                            <?php
                                             $total_paid = 0;
                                             $total_unpaid = 0;
 
                                             $select_user = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf LEFT JOIN tbl_tuition_fee ON tbl_tuition_fee.tf_id = tbl_assessed_tf.tf_id WHERE payment = 'trimestral' AND tbl_assessed_tf.ay_id = '$ay_id'"); //nag pass na sa due
 
                                             $date_array = [];
+
+                                            if (mysqli_num_rows($select_user) != 0) {
 
                                             while ($row = mysqli_fetch_array($select_user)) {
 
@@ -90,7 +86,7 @@ date_default_timezone_set('Asia/Manila');
                                                 
                                                     if ($current_z <= $date) {
 
-                                                        $select_unpaid = mysqli_query($acc, "SELECT * FROM tbl_payments_status WHERE stud_no ='$row[stud_no]' AND payment_date = '$date_value'");
+                                                        $select_unpaid = mysqli_query($acc, "SELECT * FROM tbl_payments_status WHERE stud_id ='$row[stud_id]' AND payment_date = '$date_value'");
                                                         if (mysqli_num_rows($select_unpaid) != 0) {
                                                             $total_paid++;
                                                         } else {
@@ -101,8 +97,7 @@ date_default_timezone_set('Asia/Manila');
                                                     }
                                                 }
                                             }
-                                        ?>
-                                        <div class="card-body">
+                                            ?>
                                             <div class="row">
                                                 <p>Trimestral Basis</p>
                                             </div>
@@ -152,12 +147,15 @@ date_default_timezone_set('Asia/Manila');
                                             </div>
                                             <hr>
                                             <?php
+                                            }
                                             $total_paid = 0;
                                             $total_unpaid = 0;
 
                                             $select_user = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf LEFT JOIN tbl_tuition_fee ON tbl_tuition_fee.tf_id = tbl_assessed_tf.tf_id WHERE payment = 'quarterly' AND tbl_assessed_tf.ay_id = '$ay_id'"); //nag pass na sa due
 
                                             $date_array = [];
+
+                                            if (mysqli_num_rows($select_user) != 0) {
 
                                             while ($row = mysqli_fetch_array($select_user)) {
 
@@ -175,7 +173,7 @@ date_default_timezone_set('Asia/Manila');
                                                 
                                                     if ($current_z <= $date) {
 
-                                                        $select_unpaid = mysqli_query($acc, "SELECT * FROM tbl_payments_status WHERE stud_no ='$row[stud_no]' AND payment_date = '$date_value'");
+                                                        $select_unpaid = mysqli_query($acc, "SELECT * FROM tbl_payments_status WHERE stud_id ='$row[stud_id]' AND payment_date = '$date_value'");
                                                         if (mysqli_num_rows($select_unpaid) != 0) {
                                                             $total_paid++;
                                                         } else {
@@ -228,11 +226,14 @@ date_default_timezone_set('Asia/Manila');
                                                         <i class="fas fa-cog"></i> Set as Unpaid for <?php echo $_SESSION['active_acadyears']?></a>
                                                 </div>
                                             </div>
+                                            <?php
+                                            }
+                                            ?>
                                         </div>
                                         <!-- /.card-body -->
 
                                         <div class="card-footer">
-                                        <a href="assessment.fee.<?php echo $row['payment']?>.php?stud_no=<?php echo $stud_no?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
+                                        <a href="assessment.fee.<?php echo $row['payment']?>.php?stud_id=<?php echo $stud_id?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-check"></i>
                                                 Finish
                                             </a>

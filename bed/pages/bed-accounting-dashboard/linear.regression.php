@@ -100,6 +100,14 @@ require '../../includes/bed-session.php';
                                             </div>
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-6">
+                                                    <p><span id="mean_x"></span></p>
+                                                </div>
+                                                <div class="input-group col-md-6">
+                                                    <p><span id="mean_y"></span></p>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="input-group col-md-6">
                                                     <p><span id="pearson"></span></p>
                                                 </div>
                                                 <div class="input-group col-md-6">
@@ -245,6 +253,9 @@ require '../../includes/bed-session.php';
             document.getElementById("estimation_total").innerHTML = "Estimated Number of Students as per "+ estimation_fee +" fee:<br> "+(b).toFixed(4) +"("+ estimation_fee +")"+"+ " + (a).toFixed(2)+ " = <b>"+ estimation_y +" number of students</b>";
             document.getElementById("pearson").innerHTML = "Pearson's r: <b>"+ (pearson_r).toFixed(4)+"</b>";
             document.getElementById("rsquared").innerHTML = "Coefficient of Determination: <b>"+ (rsquared).toFixed(4)+"</b>";
+
+            document.getElementById("mean_x").innerHTML = "Mean X: <b>"+ (mean_x).toFixed(4)+"</b>";
+            document.getElementById("mean_y").innerHTML = "Mean Y: <b>"+ (mean_y).toFixed(4)+"</b>";
 
             xhttp = new XMLHttpRequest();
 

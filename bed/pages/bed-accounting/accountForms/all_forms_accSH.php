@@ -590,8 +590,7 @@ $pdf->Cell(27, 5, 'BALANCE', 1, 1, 'C');
 
 $assessed_info = mysqli_query($acc,"SELECT * FROM tbl_assessed_tf
 LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-LEFT JOIN tbl_discounts ON tbl_assessed_tf.disc_id = tbl_discounts.disc_id
-WHERE stud_no = '$stud_no' AND tbl_assessed_tf.ay_id = $ay_id LIMIT 1")or die(mysqli_error($acc));
+WHERE stud_id = '$stud_id' AND tbl_assessed_tf.ay_id = $ay_id LIMIT 1")or die(mysqli_error($acc));
 while ($row1 = mysqli_fetch_array($assessed_info)) {
     $discount_array = explode(",",$row1['disc_id']);
     $tuition_fee = $row1['tuition_fee'];
@@ -1591,8 +1590,7 @@ while ($row = mysqli_fetch_array($get_stud)) {
 
     $assessed_info = mysqli_query($acc,"SELECT * FROM tbl_assessed_tf
     LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-    LEFT JOIN tbl_discounts ON tbl_assessed_tf.disc_id = tbl_discounts.disc_id
-    WHERE stud_no = '$stud_no' AND tbl_assessed_tf.ay_id = $ay_id LIMIT 1")or die(mysqli_error($acc));
+    WHERE stud_id = '$stud_id' AND tbl_assessed_tf.ay_id = $ay_id LIMIT 1")or die(mysqli_error($acc));
     while ($row1 = mysqli_fetch_array($assessed_info)) {
         $tuition_fee = $row1['tuition_fee'];
         $cash_basis = $row1['cash_basis'];

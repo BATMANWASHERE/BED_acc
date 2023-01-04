@@ -50,7 +50,7 @@ $disc_id = $_GET['disc_id'];
                             <div class="col-md-8">
                                 <div class="card card-purple shadow-lg">
                                     <div class="card-header">
-                                        <h3 class="card-title">Add Discount
+                                        <h3 class="card-title">Edit Discount
                                         </h3>
                                     </div>
                                     <!-- /.card-header -->

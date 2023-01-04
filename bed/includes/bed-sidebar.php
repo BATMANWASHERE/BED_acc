@@ -691,6 +691,29 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-sign-in-alt"></i>
+                        <p>
+                            Fees Assessment
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="../bed-accounting/add.assess.php" class="nav-link">
+                                <i class="fa fa-user-plus nav-icon"></i>
+                                <p> Assess Fee</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="../bed-accounting/list.assess.php" class="nav-link">
+                                <i class="fa fa-user-plus nav-icon"></i>
+                                <p> Assessed Fee List</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 ';
                     // END ADMISSION
 
@@ -741,12 +764,6 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="../bed-accounting/add.assess.php" class="nav-link">
-                                <i class="fa fa-user-plus nav-icon"></i>
-                                <p> Assess Fee</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="../bed-accounting/list.assess.php" class="nav-link">
                                 <i class="fa fa-user-plus nav-icon"></i>
                                 <p> Assessed Fee List</p>
@@ -765,6 +782,12 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="../bed-accounting/add.installment.dates.php" class="nav-link">
+                                <i class="fa fa-user-plus nav-icon"></i>
+                                <p> Add Installment Dates</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="../bed-accounting/add.discount.php" class="nav-link">
                                 <i class="fa fa-user-plus nav-icon"></i>
                                 <p> Add Discount</p>
@@ -774,6 +797,12 @@
                             <a href="../bed-accounting/add.tuition.php" class="nav-link">
                                 <i class="fa fa-user-plus nav-icon"></i>
                                 <p> Add Tuition Fee</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="../bed-accounting/list.installment.dates.php" class="nav-link">
+                                <i class="fa fa-user-plus nav-icon"></i>
+                                <p> List of Installment Dates</p>
                             </a>
                         </li>
                         <li class="nav-item">

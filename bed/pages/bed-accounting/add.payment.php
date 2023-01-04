@@ -9,7 +9,7 @@ require '../../includes/bed-session.php';
 
 if ($_SESSION['role'] == "Student" && $_GET['notif'] == 1) {
     
-} elseif ($_SESSION['role'] != "Accounting") {
+} elseif ($_SESSION['role'] != "Accounting" && $_SESSION['role'] != "Admission") {
     header('location: ../../pages/bed-404/page404.php');
 } else {
     
@@ -20,7 +20,7 @@ $get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year
 $row_ay = mysqli_fetch_array($get_ay_id);
 $ay_id = $row_ay['ay_id'];
 
-$stud_no = $_GET['stud_no'];
+$stud_id = $_GET['stud_id'];
 date_default_timezone_set('Asia/Manila');
 ?>
 
@@ -68,7 +68,7 @@ date_default_timezone_set('Asia/Manila');
                                         LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
                                         LEFT JOIN tbl_strands ON tbl_schoolyears.strand_id = tbl_strands.strand_id 
                                         LEFT JOIN tbl_grade_levels ON  tbl_schoolyears.grade_level_id = tbl_grade_levels.grade_level_id
-                                        WHERE tbl_students.stud_no = '$stud_no' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                        WHERE tbl_students.student_id = '$stud_id' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
 
                                         while ($row3 = mysqli_fetch_array($get_studentInfo)) {
                                             $grade_ident = $row3['grade_level_id'];
@@ -85,7 +85,7 @@ date_default_timezone_set('Asia/Manila');
                                     <?php
                                         $get_tuitionInfo = mysqli_query($acc, "SELECT *, tbl_assessed_tf.last_updated, tbl_assessed_tf.created_at, tbl_assessed_tf.updated_by FROM tbl_assessed_tf
                                         LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-                                        WHERE stud_no = '$stud_no' AND tbl_assessed_tf.ay_id = '$ay_id'") or die(mysqli_error($acc));
+                                        WHERE stud_id = '$stud_id' AND tbl_assessed_tf.ay_id = '$ay_id'") or die(mysqli_error($acc));
 
                                         while ($row = mysqli_fetch_array($get_tuitionInfo)) {
 
@@ -98,8 +98,11 @@ date_default_timezone_set('Asia/Manila');
                                                 $payment_array[] = number_format($row['first_tri'], 2);
                                                 $payment_array[] = number_format($row['second_tri'], 2);
 
-                                                $date_array[] = ($row['date_tri_1']);
-                                                $date_array[] = ($row['date_tri_2']);
+                                                $get_installment_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                while($row4 = mysqli_fetch_array($get_installment_dates)) {
+                                                    $date_array[] = ($row4['first_semester']);
+                                                    $date_array[] = ($row4['second_semester']);
+                                                }
 
                                             } elseif ($row['payment'] == 'quarterly') {
                                                 $payment_array[] = number_format($row['first_quar'], 2);
@@ -107,10 +110,13 @@ date_default_timezone_set('Asia/Manila');
                                                 $payment_array[] = number_format($row['third_quar'], 2);
                                                 $payment_array[] = number_format($row['fourth_quar'], 2);
 
-                                                $date_array[] = ($row['date_quar_1']);
-                                                $date_array[] = ($row['date_quar_2']);
-                                                $date_array[] = ($row['date_quar_3']);
-                                                $date_array[] = ($row['date_quar_4']);
+                                                $get_installment_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'") or die(mysqli_error($acc));
+                                                while($row4 = mysqli_fetch_array($get_installment_dates)) {
+                                                    $date_array[] = ($row4['first_quarter']);
+                                                    $date_array[] = ($row4['second_quarter']);
+                                                    $date_array[] = ($row4['third_quarter']);
+                                                    $date_array[] = ($row4['fourth_quarter']);
+                                                }
 
                                             }
                                     ?>
@@ -131,18 +137,18 @@ date_default_timezone_set('Asia/Manila');
 
                                                     $paymentCheck = mysqli_query($acc,"SELECT * FROM tbl_payments_status
                                                     LEFT JOIN tbl_assessed_tf ON tbl_assessed_tf.assessed_id = tbl_payments_status.assessed_id
-                                                    WHERE tbl_payments_status.stud_no = '$stud_no' and payment_value = '$payment' and payment_date = '$date_array[$i]' AND ay_id = '$ay_id'") or die (mysqli_error($acc));
+                                                    WHERE tbl_payments_status.stud_id = '$stud_id' and payment_value = '$payment' and payment_date = '$date_array[$i]' AND ay_id = '$ay_id'") or die (mysqli_error($acc));
 
                                                     $paymentCheck1 = mysqli_query($acc,"SELECT * FROM tbl_payments_status
                                                     LEFT JOIN tbl_assessed_tf ON tbl_assessed_tf.assessed_id = tbl_payments_status.assessed_id
-                                                    WHERE tbl_payments_status.stud_no = '$stud_no' and tbl_payments_status.status = 'Paid' and payment_date = '$date_array[$i]' AND ay_id = '$ay_id'") or die (mysqli_error($acc));
+                                                    WHERE tbl_payments_status.stud_id = '$stud_id' and tbl_payments_status.status = 'Paid' and payment_date = '$date_array[$i]' AND ay_id = '$ay_id'") or die (mysqli_error($acc));
                                                     
                                                     
 
-                                                    if (mysqli_num_rows($paymentCheck) == 0 && mysqli_num_rows($paymentCheck1) == 0) {
+                                                    if (mysqli_num_rows($paymentCheck) == 0 || mysqli_num_rows($paymentCheck1) == 0) {
 
                                             ?>
-                                            <form action="userData/ctrl.addPayment.php?stud_no=<?php echo $stud_no?>&assessed_id=<?php echo $assessed_id;?>&payment=<?php echo $row['payment']?>" method="POST">
+                                            <form action="userData/ctrl.addPayment.php?stud_id=<?php echo $stud_id?>&assessed_id=<?php echo $assessed_id;?>&payment=<?php echo $row['payment']?>" method="POST">
                                             <div class="row ">
                                                 <input type="hidden" name="index" value="<?php echo $i;?>">
                                                 <div class="input-group col-md-5 mb-2">
@@ -177,7 +183,7 @@ date_default_timezone_set('Asia/Manila');
                                             <?php
                                                 $paymentCheck = mysqli_query($acc,"SELECT * FROM tbl_payments_status
                                                 LEFT JOIN tbl_assessed_tf ON tbl_assessed_tf.assessed_id = tbl_payments_status.assessed_id
-                                                WHERE tbl_payments_status.stud_no = '$stud_no' AND ay_id = '$ay_id'");
+                                                WHERE tbl_payments_status.stud_id = '$stud_id' AND ay_id = '$ay_id'");
 
                                                 if (mysqli_num_rows($paymentCheck) != 0) {
                                             ?>
@@ -201,7 +207,7 @@ date_default_timezone_set('Asia/Manila');
                                                     <p><b>Date of Payment:</b> <?php echo $date_payment->format('F d, Y'); ?></p>
                                                 </div>
                                             </div>
-                                            <form action="userData/ctrl.addPayment.php?stud_no=<?php echo $stud_no?>&assessed_id=<?php echo $assessed_id;?>" method="POST">
+                                            <form action="userData/ctrl.addPayment.php?stud_id=<?php echo $stud_id?>&assessed_id=<?php echo $assessed_id;?>" method="POST">
                                             <div class="row ">
                                                 <input type="hidden" name="index" value="<?php echo $i;?>">
                                                 <div class="input-group col-md-5 mb-2">
@@ -231,7 +237,7 @@ date_default_timezone_set('Asia/Manila');
                                         <!-- /.card-body -->
 
                                         <div class="card-footer">
-                                            <a href="assessment.fee.<?php echo $row['payment']?>.php?stud_no=<?php echo $stud_no?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
+                                            <a href="assessment.fee.<?php echo $row['payment']?>.php?stud_id=<?php echo $stud_id?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-check"></i>
                                                 Finish
                                             </a>

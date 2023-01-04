@@ -19,32 +19,31 @@ if (isset($_POST['submit_search'])) {
  
 
         $check_search = mysqli_query($conn, "SELECT * FROM tbl_schoolyears LEFT JOIN tbl_students ON tbl_students.student_id = tbl_schoolyears.student_id WHERE stud_no = '$stud_no' limit 1") or die(mysqli_error($conn));
-        $check_grade = mysqli_fetch_array($check_search);
+        $stud_info = mysqli_fetch_array($check_search); 
+        $result_search = mysqli_num_rows($check_search);
         
-        $result = mysqli_num_rows($check_search);
+        if ($result_search > 0) {
 
-        if ($result > 0) {
+            if ($stud_info['grade_level_id'] == 14 || $stud_info['grade_level_id'] == 15) {
 
-            if ($check_grade['grade_level_id'] == 14 || $check_grade['grade_level_id'] == 15) {
-
-            $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_no = '$stud_no' and ay_id = '$ay_id' and sem_id = '$sem_id'") or die(mysqli_error($acc));
-
-            $result1 = mysqli_num_rows($check_assessments);
+                $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_id = '$stud_info[student_id]' and ay_id = '$ay_id' and sem_id = '$sem_id'") or die(mysqli_error($acc));
+                $result_aseessment = mysqli_num_rows($check_assessments);
 
             } else {
-            $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_no = '$stud_no' and ay_id = '$ay_id'") or die(mysqli_error($acc));
 
-            $result1 = mysqli_num_rows($check_assessments);
+                $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_id = '$stud_info[student_id]' and ay_id = '$ay_id'") or die(mysqli_error($acc));
+                $result_aseessment = mysqli_num_rows($check_assessments);
+
             }
 
-            if ($result1 > 0) {
+            if ($result_aseessment > 0) {
 
                 $_SESSION['assessment_existing'] = true;
                 header('location: ../add.assess.php');
 
             } else {
 
-                header('location: ../add.assessment.php?stud_no=' . $stud_no);
+                header('location: ../add.assessment.php?stud_id=' . $stud_info['student_id']);
 
             }
 

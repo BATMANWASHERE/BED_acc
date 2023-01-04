@@ -7,6 +7,7 @@ ob_start();
 
 require '../../includes/bed-session.php';
 
+
 if (isset($_GET['ay_id'])) {
     $ay_id = $_GET['ay_id'];
 } else {
@@ -26,7 +27,7 @@ if (isset($_GET['ay_id'])) {
 <!-- Head and links -->
 
 <head>
-    <title>List of Assessed Fees | SFAC Bacoor</title>
+    <title>Installment Dates List | SFAC Bacoor</title>
     <?php include '../../includes/bed-head.php'; ?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -40,7 +41,7 @@ if (isset($_GET['ay_id'])) {
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link disabled text-light">List of Assessed Fees</a>
+                    <a href="#" class="nav-link disabled text-light">Installment Dates List</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="#" class="nav-link disabled text-light">Basic Education</a>
@@ -61,17 +62,13 @@ if (isset($_GET['ay_id'])) {
                             <div class="col-12">
                                 <div class="card shadow">
                                     <div class="card-header bg-navy p-3">
-                                        <h3 class="card-title text-lg">Assessed Fees</h3>
+                                        <h3 class="card-title text-lg">Installment Dates List</h3>
                                     </div>
                                     <!-- /.card-header -->
                                     <div class="card-body">
                                         <form method="GET">
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-4 mb-2">
-
-                                                </div>
-                                                <div class="input-group col-md-4 mb-2">
-                                                    <form method="GET">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Academic Year</span>
                                                     </div>
@@ -98,13 +95,7 @@ if (isset($_GET['ay_id'])) {
                                                                 Filter
                                                             </button>
                                                     </div>
-                                                    </form>
-                                                </div>
-                                                <div class="input-group col-md-4 mb-2 justify-content-end">
-                                                    <a class="btn bg-navy"
-                                                                data-toggle="tooltip" data-placement="bottom"
-                                                                title="Change Student's Payment Type if Exceeded in Due Date" href="edit.payment.type.php" disabled>
-                                                                <i class="fas fa-cog"></i> Change Payment Types</a>
+
                                                 </div>
                                             </div>
                                         </form>
@@ -113,45 +104,38 @@ if (isset($_GET['ay_id'])) {
                                         <table id="example2" class="table table-hover">
                                             <thead class="bg-gray-light">
                                                 <tr>
-                                                    <th>Student ID</th>
-                                                    <th>Student Name</th>
-                                                    <th>Grade Level</th>
                                                     <th>School Year</th>
+                                                    <th>Trimestral</th>
+                                                    <th>Quarterly</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="border-bottom">
+                                                <?php $get_user = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id' ORDER BY ay_id") ?>
                                                 <tr>
-                                                <?php
-                                                    $get_tf_info = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf
-                                                    LEFT JOIN tbl_tuition_fee ON tbl_tuition_fee.tf_id = tbl_assessed_tf.tf_id WHERE tbl_assessed_tf.ay_id = '$ay_id'")or die(mysqli_error($acc));
-                                                    
-                                                        while ($row = mysqli_fetch_array($get_tf_info)) {
-                                                            
-                                                        $id = $row['stud_id'];
-                                                        $assessed_id = $row['assessed_id'];
-                                                        $aySec = mysqli_query($conn, "SELECT * FROM tbl_acadyears WHERE ay_id = '$row[ay_id]'") or die (mysqli_error($acc));
-                                                        $ayFetch = mysqli_fetch_array($aySec);
+                                                    <?php
+                                                    while ($row = mysqli_fetch_array($get_user)) {
+                                                        $id = $row['installment_id']; 
                                         
-                                                        $student_info = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
-                                                        LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
-                                                        LEFT JOIN tbl_grade_levels ON tbl_schoolyears.grade_level_id = tbl_grade_levels.grade_level_id
-                                                        WHERE tbl_students.student_id = '$row[stud_id]' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                                        $aySec = mysqli_query($conn, "SELECT * FROM tbl_acadyears WHERE ay_id = '$row[ay_id]'") ;
+                                                        $ayFetch = mysqli_fetch_array($aySec);
 
-                                                        $row2 = mysqli_fetch_array($student_info);
+                                                        ?>
 
-                                                ?>
-                                                    <td><?php echo $row2['stud_no']; ?></td>
-                                                    <td><?php echo $row2['fullname']; ?></td>
-                                                    <td><?php echo $row2['grade_level']; ?></td>
                                                     <td><?php echo $ayFetch['academic_year']; ?></td>
-
+                                                    <td>First Semester (<?php echo $row['first_semester'];?>)<br>
+                                                    Second Semester (<?php echo $row['second_semester']?>)</td>
+                                                    <td>First Quarter (<?php echo $row['first_quarter'];?>)<br>
+                                                    Second Quarter (<?php echo $row['second_quarter'];?>)<br>
+                                                    Third Quarter (<?php echo $row['third_quarter'];?>)<br>
+                                                    Fourth Quarter (<?php echo $row['fourth_quarter'];?>)<br>
+                                                    </td>
                                                     
-                                                    <td><a href="assessment.fee.<?php echo $row['payment']?>.php<?php echo '?stud_id=' . $id; ?>"
+                                                    <td><a href="edit.installment.dates.php<?php echo '?installment_id=' . $id; ?>"
                                                             type="button"
                                                             class="btn bg-lightblue text-sm p-2 mb-md-2"><i
-                                                                class="fa fa-eye"></i>
-                                                            See Details
+                                                                class="fa fa-edit"></i>
+                                                            Update
                                                         </a>
 
                                                         <!-- Button trigger modal -->
@@ -179,12 +163,12 @@ if (isset($_GET['ay_id'])) {
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body p-3">
-                                                                        Are you sure you want to delete <b><?php echo $row2['fullname']; ?></b> assessment?
+                                                                        Are you sure you want to <b><?php echo $row['discount_desc'];?></b> with a value of <b><?php echo $row['discount']; ?></b>?
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary"
                                                                             data-dismiss="modal">Close</button>
-                                                                        <a href="userData/ctrl.delAssessment.php<?php echo '?assessed_id=' . $assessed_id; ?>"
+                                                                        <a href="userData/ctrl.delDiscount.php<?php echo '?disc_id=' . $id; ?>"
                                                                             type="button"
                                                                             class="btn btn-danger">Delete</a>
                                                                     </div>
@@ -192,7 +176,8 @@ if (isset($_GET['ay_id'])) {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                </tr><?php } ?>
+                                                </tr><?php }
+                                                ?>
 
                                             </tbody>
                                         </table>

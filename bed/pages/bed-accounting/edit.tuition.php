@@ -8,7 +8,9 @@ ob_start();
 require '../../includes/bed-session.php';
 
 $tf_id = $_GET['tf_id'];
-
+$get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year = '$_SESSION[active_acadyears]'");
+$row_ay = mysqli_fetch_array($get_ay_id);
+$ay_id = $row_ay['ay_id'];
 
 ?>
 
@@ -258,20 +260,28 @@ $tf_id = $_GET['tf_id'];
                                                 <div class="input-group col-md-3 mb-2">
                                                     <h7><b>Trimestral Basis</b></h7>
                                                 </div>
+                                                <?php
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                    while ($row1 = mysqli_fetch_array($get_dates)) {
+
+                                                ?>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_tri_1" id="date_tri_1" value="<?php echo $row['date_tri_1']; ?>">
+                                                    <input type="date" class="form-control" name="first_semester" id="first_semester" value="<?php echo $row1['first_semester'];?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_tri_2" id="date_tri_2" value="<?php echo $row['date_tri_2']; ?>">
+                                                    <input type="date" class="form-control" name="second_semester" value="<?php echo $row1['second_semester'];?>" id="second_semester" disabled>
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                 </div>
+                                                <?php
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-3 mb-2">
@@ -282,13 +292,13 @@ $tf_id = $_GET['tf_id'];
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text">1st Quarter</span>
+                                                        <span class="input-group-text">First Semester</span>
                                                     </div>
                                                     <input type="text" class="form-control" name="first_tri" id="first_tri" onkeyup="reSum1();" placeholder="Php 0.00" value="<?php echo $row['first_tri']; ?>">
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text">Second Quarter</span>
+                                                        <span class="input-group-text">Second Semester</span>
                                                     </div>
                                                     <input type="text" class="form-control" name="second_tri" id="second_tri" onkeyup="reSum1();" placeholder="Php 0.00" value="<?php echo $row['second_tri']; ?>">
                                                 </div>
@@ -305,32 +315,40 @@ $tf_id = $_GET['tf_id'];
                                                 <div class="input-group col-md-2 mb-2">
                                                     <h7><b>Quarterly Basis</b></h7>
                                                 </div>
+                                                <?php
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                    while ($row1 = mysqli_fetch_array($get_dates)) {
+
+                                                ?>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_1" id="date_quar_1" value="<?php echo $row['date_quar_1']; ?>">
-                                                </div>
-                                                <div class="input-group col-md-2 mb-2">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Due Date</span>
-                                                    </div>
-                                                    <input type="date" class="form-control" name="date_quar_2" id="date_quar_2" value="<?php echo $row['date_quar_2']; ?>">
-                                                </div>
-                                                <div class="input-group col-md-2 mb-2">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Due Date</span>
-                                                    </div>
-                                                    <input type="date" class="form-control" name="date_quar_3" id="date_quar_3" value="<?php echo $row['date_quar_3']; ?>">
+                                                    <input type="date" class="form-control" name="first_quarter" id="first_quarter" value="<?php echo $row1['first_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_4" id="date_quar_4" value="<?php echo $row['date_quar_4']; ?>">
+                                                    <input type="date" class="form-control" name="second_quarter" id="second_quarter" value="<?php echo $row1['second_quarter']; ?>" disabled>
+                                                </div>
+                                                <div class="input-group col-md-2 mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Due Dater</span>
+                                                    </div>
+                                                    <input type="date" class="form-control" name="third_quarter" id="third_quarter" value="<?php echo $row1['third_quarter']; ?>" disabled>
+                                                </div>
+                                                <div class="input-group col-md-2 mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Due Date</span>
+                                                    </div>
+                                                    <input type="date" class="form-control" name="fourth_quarter" id="fourth_quarter" value="<?php echo $row1['fourth_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                 </div>
+                                                <?php
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-2 mb-2">
@@ -347,19 +365,19 @@ $tf_id = $_GET['tf_id'];
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text">2nd Quarter</span>
+                                                        <span class="input-group-text">Second Quarter</span>
                                                     </div>
                                                     <input type="text" class="form-control" name="second_quar" id="second_quar" onkeyup="reSum2();" placeholder="Php 0.00" value="<?php echo $row['second_quar']; ?>">
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text">3rd Quarter</span>
+                                                        <span class="input-group-text">Third Quarter</span>
                                                     </div>
                                                     <input type="text" class="form-control" name="third_quar" id="third_quar" onkeyup="reSum2();" placeholder="Php 0.00" value="<?php echo $row['third_quar']; ?>">
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text">4th Quarter</span>
+                                                        <span class="input-group-text">Fourth Quarter</span>
                                                     </div>
                                                     <input type="text" class="form-control" name="fourth_quar" id="fourth_quar" onkeyup="reSum2();" placeholder="Php 0.00" value="<?php echo $row['fourth_quar']; ?>">
                                                 </div>

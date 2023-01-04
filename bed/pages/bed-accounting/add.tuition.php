@@ -1,10 +1,14 @@
 <?php
 require '../../includes/conn.php';
+require 'accountConn/conn.php';
 session_start();
 ob_start();
 
 
 require '../../includes/bed-session.php';
+$get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year = '$_SESSION[active_acadyears]'");
+$row_ay = mysqli_fetch_array($get_ay_id);
+$ay_id = $row_ay['ay_id'];
 ?>
 
 <!DOCTYPE html>
@@ -244,20 +248,28 @@ require '../../includes/bed-session.php';
                                                 <div class="input-group col-md-3 mb-2">
                                                     <h7><b>Trimestral Basis</b></h7>
                                                 </div>
+                                                <?php
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                    while ($row1 = mysqli_fetch_array($get_dates)) {
+
+                                                ?>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_tri_1" id="date_tri_1" placeholder="">
+                                                    <input type="date" class="form-control" name="first_semester" id="first_semester" value="<?php echo $row1['first_semester'];?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_tri_2" id="date_tri_2" placeholder="">
+                                                    <input type="date" class="form-control" name="second_semester" value="<?php echo $row1['second_semester'];?>" id="second_semester" disabled>
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                 </div>
+                                                <?php
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-3 mb-2">
@@ -268,13 +280,13 @@ require '../../includes/bed-session.php';
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text">1st Quarter</span>
+                                                        <span class="input-group-text">1st Semester</span>
                                                     </div>
                                                     <input type="text" class="form-control" name="first_tri" id="first_tri" onkeyup="reSum1();" placeholder="Php 0.00">
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text">Second Quarter</span>
+                                                        <span class="input-group-text">Second Semester</span>
                                                     </div>
                                                     <input type="text" class="form-control" name="second_tri" id="second_tri" onkeyup="reSum1();" placeholder="Php 0.00">
                                                 </div>
@@ -291,32 +303,40 @@ require '../../includes/bed-session.php';
                                                 <div class="input-group col-md-2 mb-2">
                                                     <h7><b>Quarterly Basis</b></h7>
                                                 </div>
+                                                <?php
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                    while ($row1 = mysqli_fetch_array($get_dates)) {
+
+                                                ?>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_1" id="date_quart_1" placeholder="Php 0.00">
+                                                    <input type="date" class="form-control" name="first_quarter" id="first_quarter" value="<?php echo $row1['first_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_2" id="date_quart_2" placeholder="Php 0.00">
+                                                    <input type="date" class="form-control" name="second_quarter" id="second_quarter" value="<?php echo $row1['second_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Dater</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_3" id="date_quart_3" placeholder="Php 0.00">
+                                                    <input type="date" class="form-control" name="third_quarter" id="third_quarter" value="<?php echo $row1['third_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_4" id="date_quart_4" placeholder="Php 0.00">
+                                                    <input type="date" class="form-control" name="fourth_quarter" id="fourth_quarter" value="<?php echo $row1['fourth_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                 </div>
+                                                <?php
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-2 mb-2">

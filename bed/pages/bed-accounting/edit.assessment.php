@@ -6,11 +6,18 @@ ob_start();
 
 
 require '../../includes/bed-session.php';
+if ($_SESSION['role'] == "Student" && $_GET['notif'] == 1) {
+    
+} elseif ($_SESSION['role'] != "Accounting" && $_SESSION['role'] != "Admission") {
+    header('location: ../../pages/bed-404/page404.php');
+} else {
+    
+}
 $get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year = '$_SESSION[active_acadyears]'");
 $row_ay = mysqli_fetch_array($get_ay_id);
 $ay_id = $row_ay['ay_id'];
 
-$stud_no = $_GET['stud_no'];
+$stud_id = $_GET['stud_id'];
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +63,7 @@ $stud_no = $_GET['stud_no'];
                                     <?php
                                         $get_studentInfo = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
                                         LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
-                                        WHERE tbl_students.stud_no = '$stud_no' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                        WHERE tbl_students.student_id = '$stud_id' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
 
                                         while ($row1 = mysqli_fetch_array($get_studentInfo)) {
                                     ?>
@@ -71,13 +78,13 @@ $stud_no = $_GET['stud_no'];
                                     <?php
                                         $get_tuitionInfo = mysqli_query($acc, "SELECT * FROM tbl_tuition_fee
                                         LEFT JOIN tbl_assessed_tf ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-                                        WHERE grade_level_id = '$row1[grade_level_id]' AND stud_no = '$stud_no'");
+                                        WHERE grade_level_id = '$row1[grade_level_id]' AND stud_id = '$stud_id'");
 
                                         while ($row = mysqli_fetch_array($get_tuitionInfo)) {
                                         
                                         ?>
 
-                                    <form action="userData/ctrl.editAssessment.php<?php echo '?stud_no=' . $stud_no; ?>" method="POST">
+                                    <form action="userData/ctrl.editAssessment.php<?php echo '?stud_id=' . $stud_id; ?>" method="POST">
                                         <div class="card-body">
                                             <div class="row">
                                             <div class="col-6 justify-content-center">
@@ -111,7 +118,7 @@ $stud_no = $_GET['stud_no'];
                                                     </div>
                                                     <select class="form-control custom-select select2 select2-purple"
                                                         data-dropdown-css-class="select2-purple"
-                                                        data-placeholder="Select Year" name="ay" disabled>
+                                                        data-placeholder="Select Year" name="ay_id" disabled>
                                                         <?php
                                                         $query_diffdb = mysqli_query($conn, "SELECT * FROM tbl_acadyears WHERE ay_id = '$row[ay_id]'");
                                                         while($row4 = mysqli_fetch_array($query_diffdb)) {
@@ -123,7 +130,7 @@ $stud_no = $_GET['stud_no'];
                                                                 echo '<option value="'.$row5['ay_id'].'">'.$row5['academic_year'].'</option>';
                                                             }
                                                         ?>
-                                                        <input type="text" class="form-control" name="ay" value="<?php echo $ay_value;?>" hidden>
+                                                        <input type="text" class="form-control" name="ay_id" value="<?php echo $ay_value;?>" hidden>
                                                     </select>
                                                     
                                                 </div>
@@ -186,25 +193,21 @@ $stud_no = $_GET['stud_no'];
                                                 </div>
                                             
                                             </div>
-                                            <div class="col-6 justify-content-center">
-                                                <div class="form-group">
-                                                    <?php
-                                                    ?>
-                                                    <label>Type of payment:</label>
-                                                    <div class="form-group">
-                                                        <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="cash" name="payment[]" <?php echo ($row['payment']== 'cash' ? 'checked' : '');?>>
-                                                        <label class="form-check-label">Cash</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="trimestral" name="payment[]" <?php echo ($row['payment']== 'trimestral' ? 'checked' : '');?>>
-                                                        <label class="form-check-label">Trimestral</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="quarterly" name="payment[]" <?php echo ($row['payment']== 'quarterly' ? 'checked' : '');?>>
-                                                        <label class="form-check-label">Quarterly</label>
-                                                        </div>
+                                            <div class="col-3 justify-content-center">
+                                                <div class="input-group row mb-2">
+                                                    <div class="input-group-prepend">
+                                                    <span class="input-group-text text-sm"><b>
+                                                            Type of Payment</b></span>
                                                     </div>
+                                                    <select class="form-control custom-select select2 select2-purple"
+                                                        data-dropdown-css-class="select2-purple" name="payment"
+                                                        data-placeholder="Select Year">
+                                                        <option selected value="<?php echo $row['payment']?>"><?php echo ucfirst($row['payment']);?></option>
+                                                        <option value="cash">Cash</option>
+                                                        <option value="trimestral">Trimestral</option>
+                                                        <option value="quarterly">Quarterly</option>
+                                                    </select>
+                                                    
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Discounts:</label>
@@ -238,20 +241,28 @@ $stud_no = $_GET['stud_no'];
                                                 <div class="input-group col-md-3 mb-2">
                                                     <h7><b>Trimestral Basis</b></h7>
                                                 </div>
+                                                <?php
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                    while ($row1 = mysqli_fetch_array($get_dates)) {
+
+                                                ?>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_tri_1" id="date_tri_1" placeholder="" value="<?php echo $row['date_tri_1'];?>" disabled>
+                                                    <input type="date" class="form-control" name="first_semester" id="first_semester" placeholder="" value="<?php echo $row1['first_semester'];?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_tri_2" id="date_tri_2" placeholder="" value="<?php echo $row['date_tri_2'];?>" disabled>
+                                                    <input type="date" class="form-control" name="second_semester" id="second_semester" placeholder="" value="<?php echo $row1['second_semester'];?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-3 mb-2">
                                                 </div>
+                                                <?php
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-3 mb-2">
@@ -284,32 +295,40 @@ $stud_no = $_GET['stud_no'];
                                                 <div class="input-group col-md-2 mb-2">
                                                     <h7><b>Quarterly Basis</b></h7>
                                                 </div>
+                                                <?php
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                    while ($row1 = mysqli_fetch_array($get_dates)) {
+
+                                                ?>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_1" id="date_quart_1" placeholder="Php 0.00" value="<?php echo $row['date_quar_1']; ?>" disabled>
+                                                    <input type="date" class="form-control" name="first_quarter" id="first_quarter" value="<?php echo $row1['first_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_2" id="date_quart_2" placeholder="Php 0.00" value="<?php echo $row['date_quar_2']; ?>" disabled>
+                                                    <input type="date" class="form-control" name="second_quarter" id="second_quarter" value="<?php echo $row1['second_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Dater</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_3" id="date_quart_3" placeholder="Php 0.00" value="<?php echo $row['date_quar_3']; ?>" disabled>
+                                                    <input type="date" class="form-control" name="third_quarter" id="third_quarter" value="<?php echo $row1['third_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Due Date</span>
                                                     </div>
-                                                    <input type="date" class="form-control" name="date_quar_4" id="date_quart_4" placeholder="Php 0.00" value="<?php echo $row['date_quar_4']; ?>" disabled>
+                                                    <input type="date" class="form-control" name="fourth_quarter" id="fourth_quarter" value="<?php echo $row1['fourth_quarter']; ?>" disabled>
                                                 </div>
                                                 <div class="input-group col-md-2 mb-2">
                                                 </div>
+                                                <?php
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="row justify-content-center">
                                                 <div class="input-group col-md-2 mb-2">

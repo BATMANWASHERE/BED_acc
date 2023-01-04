@@ -10,16 +10,16 @@ if (isset($_POST['submit'])) {
     $row = mysqli_fetch_array($get_acc_name);
 
     $assessed_id = $_GET['assessed_id'];
-    $stud_no = $_GET['stud_no'];
+    $stud_id = $_GET['stud_id'];
     $payment = $_GET['payment'];
 
     $payment_date = mysqli_real_escape_string($acc, $_POST['payment_date']);
     $payment_value = mysqli_real_escape_string($acc, $_POST['payment_value']);
     $updated_by = $row['fullname'] .' - '. $_SESSION['role'];
 
-    $addPayment = mysqli_query($acc,"INSERT INTO tbl_payments_status (stud_no, assessed_id, payment_type, payment_date, payment_value, status, created_at, last_updated, updated_by) VALUES ('$stud_no', '$assessed_id', '$payment', '$payment_date', '$payment_value', 'Paid', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '$updated_by')") or die (mysqli_error($acc));
+    $addPayment = mysqli_query($acc,"INSERT INTO tbl_payments_status (stud_id, assessed_id, payment_type, payment_date, payment_value, status, created_at, last_updated, updated_by) VALUES ('$stud_id', '$assessed_id', '$payment', '$payment_date', '$payment_value', 'Paid', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '$updated_by')") or die (mysqli_error($acc));
 
-    header('location: ../add.payment.php?stud_no='.$stud_no);
+    header('location: ../add.payment.php?stud_id='.$stud_id);
 
 
 }

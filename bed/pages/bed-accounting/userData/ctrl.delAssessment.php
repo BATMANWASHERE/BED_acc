@@ -4,8 +4,8 @@ require '../accountConn/conn.php';
 session_start();
 ob_start();
 
-$get_userID = $_GET['stud_no'];
+$assessed_id = $_GET['assessed_id'];
 
-mysqli_query($acc, "DELETE FROM tbl_assessed_tf WHERE stud_no = '$get_userID'");
+mysqli_query($acc, "DELETE FROM tbl_assessed_tf WHERE assessed_id = '$assessed_id'") or die (mysqli_error($acc));
 $_SESSION['success-del'] = true;
 header('location: ../list.assess.php');

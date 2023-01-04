@@ -6,7 +6,7 @@ ob_start();
 
 if ($_SESSION['role'] == "Student" && $_GET['notif'] == 1) {
     
-} elseif ($_SESSION['role'] != "Accounting") {
+} elseif ($_SESSION['role'] != "Accounting" && $_SESSION['role'] != "Admission") {
     header('location: ../../pages/bed-404/page404.php');
 } else {
     
@@ -17,7 +17,7 @@ $get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year
 $row_ay = mysqli_fetch_array($get_ay_id);
 $ay_id = $row_ay['ay_id'];
 
-$stud_no = $_GET['stud_no'];
+$stud_id = $_GET['stud_id'];
 date_default_timezone_set('Asia/Manila');
 
 ?>
@@ -64,7 +64,7 @@ date_default_timezone_set('Asia/Manila');
                                     <?php
                                         $get_studentInfo = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
                                         LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
-                                        WHERE tbl_students.stud_no = '$stud_no' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                        WHERE tbl_students.student_id = '$stud_id' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
 
                                         while ($row3 = mysqli_fetch_array($get_studentInfo)) {
                                             $grade_ident = $row3['grade_level_id'];
@@ -81,8 +81,7 @@ date_default_timezone_set('Asia/Manila');
                                     <?php
                                         $get_tuitionInfo = mysqli_query($acc, "SELECT *, tbl_assessed_tf.last_updated, tbl_assessed_tf.created_at, tbl_assessed_tf.updated_by FROM tbl_assessed_tf
                                         LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-                                        LEFT JOIN tbl_discounts ON tbl_assessed_tf.disc_id = tbl_discounts.disc_id
-                                        WHERE stud_no = '$stud_no' AND tbl_assessed_tf.ay_id = '$ay_id'") or die(mysqli_error($acc));
+                                        WHERE stud_id = '$stud_id' AND tbl_assessed_tf.ay_id = '$ay_id'") or die(mysqli_error($acc));
 
                                         while ($row = mysqli_fetch_array($get_tuitionInfo)) {
 
@@ -91,12 +90,12 @@ date_default_timezone_set('Asia/Manila');
                                             $created_at = new DateTime($row['created_at']);
                                             $last_updated = new DateTime($row['last_updated']);
 
-                                            $date_tri_1 = new DateTime($row['date_tri_1']);
-                                            $date_tri_2 = new DateTime($row['date_tri_2']);
-                                            
+                                            $get_installment_dates = mysqli_query($acc,"SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                            $row2 = mysqli_fetch_array($get_installment_dates);
 
-                                            
-                                        
+                                            $first_semester = new DateTime($row2['first_semester']);
+                                            $second_semester = new DateTime($row2['second_semester']);
+                    
                                         ?>
                                     <form method="POST">
                                         <div class="card-body">
@@ -195,11 +194,11 @@ date_default_timezone_set('Asia/Manila');
                                                         }
                                                         ?>
                                                         <tr>
-                                                        <td>First Semester (<b><?php echo $date_tri_1->format('F d, Y') ?></b>)</td>
+                                                        <td>First Semester (<b><?php echo $first_semester->format('F d, Y') ?></b>)</td>
                                                         <td style="text-align: right;"><?php echo number_format($row['first_tri'], 2);?></td>
                                                         </tr>
                                                         <tr>
-                                                        <td>Second Semester (<b><?php echo $date_tri_2->format('F d, Y') ?>)</td>
+                                                        <td>Second Semester (<b><?php echo $second_semester->format('F d, Y') ?>)</td>
                                                         <td style="text-align: right;"><?php echo number_format($row['second_tri'], 2);?></td>
                                                         </tr>
                                                         <tr>
@@ -214,6 +213,21 @@ date_default_timezone_set('Asia/Manila');
                                                         <p><small> Created at: <?php echo $created_at->format('h:i a \o\n F d, Y');?>.<br>
                                                              Last Updated by: <?php echo $row['updated_by'];?>.<br>
                                                              Last updated at: <?php echo $last_updated->format('h:i a \o\n F d, Y');?>.</small></p>
+                                                        </td>
+                                                        <td style="text-align: right;">
+                                                                <?php
+                                                                    $history = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE status = 'Unpaid' AND stud_id = '$stud_id' AND NOT ay_id = '$ay_id' ORDER BY created_at DESC");
+                                                                    while ($row1 = mysqli_fetch_array($history)) {
+                                                                        $get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE ay_id = '$row1[ay_id]'");
+                                                                        $row_ay = mysqli_fetch_array($get_ay_id);
+                                                                        $academic_year = $row_ay['academic_year'];
+                                                                ?>
+
+                                                                    <a  class="btn bg-danger text-sm p-2 mb-md-2">Unpaid Account<br><?php echo $academic_year;?></a>
+
+                                                                <?php
+                                                                    }
+                                                                ?>
                                                         </td>
                                                         <?php
                                                             }
@@ -241,17 +255,13 @@ date_default_timezone_set('Asia/Manila');
                                                 <i class="fa fa-file-pdf"></i>
                                                 Reg Form
                                             </a>
-                                            <a href="add.payment.php<?php echo '?stud_no=' . $stud_no; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
+                                            <a href="add.payment.php<?php echo '?stud_id=' . $stud_id; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-edit"></i>
                                                 Add Payment Status
                                             </a>
-                                            <a href="edit.assessment.php<?php echo '?stud_no=' . $stud_no; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
+                                            <a href="edit.assessment.php<?php echo '?stud_id=' . $stud_id; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-edit"></i>
                                                 Edit Assessment
-                                            </a>
-                                            <a href="userData/ctrl.delAssessment.php<?php echo '?stud_no=' . $stud_no; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
-                                                <i class="fa fa-trash"></i>
-                                                Delete
                                             </a>
                                             <?php 
                                                 } else {
