@@ -362,102 +362,6 @@ title: 'Successfully Disapproved.'
 })
 }); 
 </script>";
-} elseif (isset($_SESSION['tf_existing'])) {
-    echo "<script>
-$(function() {
-    var Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 2000
-    });
-    $('.swalDefaultError')
-    Toast.fire({
-        icon: 'error',
-        title:  'The Tuition Fee is already existing.'
-    });
-});
-</script>";
-} elseif (isset($_SESSION['assessment_existing'])) {
-    echo "<script>
-$(function() {
-    var Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 2000
-    });
-    $('.swalDefaultError')
-    Toast.fire({
-        icon: 'error',
-        title:  'An assessment already exists in the account.'
-    });
-});
-</script>";
-} elseif (isset($_SESSION['no_enrolled_stud'])) {
-    echo "<script>
-$(function() {
-    var Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 4000
-    });
-    $('.swalDefaultError')
-    Toast.fire({
-        icon: 'error',
-        title:  'There is no enrolled student under the inputed Student ID Number.'
-    });
-});
-</script>";
-} elseif (isset($_SESSION['no_payment_type'])) {
-    echo "<script>
-$(function() {
-    var Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 4000
-    });
-    $('.swalDefaultError')
-    Toast.fire({
-        icon: 'error',
-        title:  'There is no payment type selected.'
-    });
-});
-</script>";
-} elseif (isset($_SESSION['multiple_payment'])) {
-    echo "<script>
-$(function() {
-    var Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 4000
-    });
-    $('.swalDefaultError')
-    Toast.fire({
-        icon: 'error',
-        title:  'There are multiple payment type selected.'
-    });
-});
-</script>";
-} elseif (isset($_SESSION['payment_existing'])) {
-    echo "<script>
-$(function() {
-    var Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 4000
-    });
-    $('.swalDefaultError')
-    Toast.fire({
-        icon: 'error',
-        title:  'Payment already exists.'
-    });
-});
-</script>";
 }
 
 unset($_SESSION['confirm']);
@@ -469,11 +373,6 @@ unset($_SESSION['subject_exists']);
 unset($_SESSION['submit-success']);
 unset($_SESSION['approve']);
 unset($_SESSION['disapprove']);
-unset($_SESSION['tf_existing']);
-unset($_SESSION['assessment_existing']);
-unset($_SESSION['no_enrolled_stud']);
-unset($_SESSION['no_payment_type']);
-unset($_SESSION['multiple_payment']);
-unset($_SESSION['payment_existing']);
+
 
 ?>

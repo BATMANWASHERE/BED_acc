@@ -24,27 +24,39 @@ if (isset($_POST['submit_search'])) {
         
         if ($result_search > 0) {
 
-            if ($stud_info['grade_level_id'] == 14 || $stud_info['grade_level_id'] == 15) {
+            $check_tuition = mysqli_query($acc, "SELECT * FROM tbl_tuition_fee WHERE grade_level_id = '$stud_info[grade_level_id]' AND ay_id = '$ay_id'") or die(mysqli_error($acc));
+            $result_tuition = mysqli_num_rows($check_tuition);
 
-                $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_id = '$stud_info[student_id]' and ay_id = '$ay_id' and sem_id = '$sem_id'") or die(mysqli_error($acc));
-                $result_aseessment = mysqli_num_rows($check_assessments);
+            if ($result_tuition == 1) {
+
+                if ($stud_info['grade_level_id'] == 14 || $stud_info['grade_level_id'] == 15) {
+
+                    $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_id = '$stud_info[student_id]' and ay_id = '$ay_id' and sem_id = '$sem_id'") or die(mysqli_error($acc));
+                    $result_aseessment = mysqli_num_rows($check_assessments);
+
+                } else {
+
+                    $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_id = '$stud_info[student_id]' and ay_id = '$ay_id'") or die(mysqli_error($acc));
+                    $result_aseessment = mysqli_num_rows($check_assessments);
+
+                }
+
+                if ($result_aseessment > 0) {
+
+                    $_SESSION['assessment_existing'] = true;
+                    header('location: ../add.assess.php');
+
+                } else {
+
+                    header('location: ../add.assessment.php?stud_id=' . $stud_info['student_id']);
+
+                }
 
             } else {
 
-                $check_assessments = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf WHERE stud_id = '$stud_info[student_id]' and ay_id = '$ay_id'") or die(mysqli_error($acc));
-                $result_aseessment = mysqli_num_rows($check_assessments);
-
-            }
-
-            if ($result_aseessment > 0) {
-
-                $_SESSION['assessment_existing'] = true;
+                $_SESSION['no_tuition_fee'] = true;
                 header('location: ../add.assess.php');
-
-            } else {
-
-                header('location: ../add.assessment.php?stud_id=' . $stud_info['student_id']);
-
+                
             }
 
         } else {

@@ -17,7 +17,7 @@ $get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year
 $row_ay = mysqli_fetch_array($get_ay_id);
 $ay_id = $row_ay['ay_id'];
 
-$stud_id = $_GET['stud_id'];
+$assessed_id = $_GET['assessed_id'];
 date_default_timezone_set('Asia/Manila');
 
 ?>
@@ -62,13 +62,23 @@ date_default_timezone_set('Asia/Manila');
                             <div class="col-md-8">
                                 <div class="card card-purple shadow-lg">
                                     <?php
-                                        $get_studentInfo = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
-                                        LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
-                                        WHERE tbl_students.student_id = '$stud_id' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                        $get_tuitionInfo = mysqli_query($acc, "SELECT *, tbl_assessed_tf.last_updated, tbl_assessed_tf.created_at, tbl_assessed_tf.updated_by FROM tbl_assessed_tf
+                                        LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
+                                        WHERE assessed_id = $assessed_id") or die(mysqli_error($acc));
 
-                                        while ($row3 = mysqli_fetch_array($get_studentInfo)) {
-                                            $grade_ident = $row3['grade_level_id'];
-                                            $stud_id = $row3['student_id'];
+                                        while ($row = mysqli_fetch_array($get_tuitionInfo)) {
+                                            
+                                            $discount_array = explode(",",$row['disc_id']);
+                                            $created_at = new DateTime($row['created_at']);
+                                            $last_updated = new DateTime($row['last_updated']);
+
+                                            $get_studentInfo = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
+                                            LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
+                                            WHERE tbl_schoolyears.student_id = '$row[stud_id]' and tbl_schoolyears.ay_id = '$row[ay_id]'") or die(mysqli_error($conn));
+
+                                            while ($row3 = mysqli_fetch_array($get_studentInfo)) {
+                                                $grade_ident = $row3['grade_level_id'];
+                                                $stud_id = $row3['student_id'];
                                     ?>
                                     <div class="card-header">
                                         <h3 class="card-title">Assessment Fee for <b><?php echo $row3['fullname'];?></b>
@@ -79,16 +89,7 @@ date_default_timezone_set('Asia/Manila');
                                     <!-- form start -->
 
                                     <?php
-                                        $get_tuitionInfo = mysqli_query($acc, "SELECT *, tbl_assessed_tf.last_updated, tbl_assessed_tf.created_at, tbl_assessed_tf.updated_by FROM tbl_assessed_tf
-                                        LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-                                        WHERE stud_id = '$stud_id' AND tbl_assessed_tf.ay_id = '$ay_id'") or die(mysqli_error($acc));
-
-                                        while ($row = mysqli_fetch_array($get_tuitionInfo)) {
-                                            
-                                            $discount_array = explode(",",$row['disc_id']);
-
-                                            $created_at = new DateTime($row['created_at']);
-                                            $last_updated = new DateTime($row['last_updated']);
+                                        
                                             
                                         ?>
                                     <form method="POST">
@@ -115,7 +116,7 @@ date_default_timezone_set('Asia/Manila');
                                                         <td style="text-align: right;"><?php echo number_format($row['tuition_fee'], 2);?></td>
                                                         </tr>
                                                         <?php
-                                                             if (!empty($discount_array)) {
+                                                             if (!empty($row['disc_id'])) {
                                                                 $tuition_fee = $row['tuition_fee'];
                                                         ?>
                                                                 <tr>
@@ -241,7 +242,7 @@ date_default_timezone_set('Asia/Manila');
                                             <?php
                                             }
                                             ?>
-                                            <a href="edit.assessment.php<?php echo '?stud_id=' . $stud_id; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
+                                            <a href="edit.assessment.php<?php echo '?assessed_id=' . $assessed_id; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-edit"></i>
                                                 Edit Assessment
                                             </a>

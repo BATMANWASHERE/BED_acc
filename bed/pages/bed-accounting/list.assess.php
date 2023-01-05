@@ -128,8 +128,8 @@ if (isset($_GET['ay_id'])) {
                                                     
                                                         while ($row = mysqli_fetch_array($get_tf_info)) {
                                                             
-                                                        $id = $row['stud_id'];
-                                                        $assessed_id = $row['assessed_id'];
+                                             
+                                                        $id = $row['assessed_id'];
                                                         $aySec = mysqli_query($conn, "SELECT * FROM tbl_acadyears WHERE ay_id = '$row[ay_id]'") or die (mysqli_error($acc));
                                                         $ayFetch = mysqli_fetch_array($aySec);
                                         
@@ -147,7 +147,7 @@ if (isset($_GET['ay_id'])) {
                                                     <td><?php echo $ayFetch['academic_year']; ?></td>
 
                                                     
-                                                    <td><a href="assessment.fee.<?php echo $row['payment']?>.php<?php echo '?stud_id=' . $id; ?>"
+                                                    <td><a href="assessment.fee.<?php echo $row['payment']?>.php<?php echo '?assessed_id=' . $id; ?>"
                                                             type="button"
                                                             class="btn bg-lightblue text-sm p-2 mb-md-2"><i
                                                                 class="fa fa-eye"></i>
@@ -184,7 +184,7 @@ if (isset($_GET['ay_id'])) {
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary"
                                                                             data-dismiss="modal">Close</button>
-                                                                        <a href="userData/ctrl.delAssessment.php<?php echo '?assessed_id=' . $assessed_id; ?>"
+                                                                        <a href="userData/ctrl.delAssessment.php<?php echo '?assessed_id=' . $id; ?>"
                                                                             type="button"
                                                                             class="btn btn-danger">Delete</a>
                                                                     </div>

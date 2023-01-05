@@ -25,12 +25,12 @@ if (isset($_POST['submit'])) {
         $result = mysqli_num_rows($check_discount);
 
         if ($result > 0) {
-            $_SESSION['tf_existing'] = true;
+            $_SESSION['installment_existing'] = true;
             header('location: ../edit.installment.dates.php?installment_id='. $installment_id);
 
         } else {
             $insert_discount = mysqli_query($acc, "UPDATE tbl_installment_dates SET ay_id = '$ay_id',  first_semester = '$first_semester', second_semester = '$second_semester', first_quarter = '$first_quarter', second_quarter = '$second_quarter', third_quarter = '$third_quarter', fourth_quarter = '$fourth_quarter' WHERE installment_id = '$installment_id'") or die(mysqli_error($acc));
-            $_SESSION['success'] = true;
+            $_SESSION['update-success'] = true;
             header('location: ../edit.installment.dates.php?installment_id='. $installment_id);
 
         }

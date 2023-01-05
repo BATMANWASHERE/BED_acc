@@ -25,7 +25,7 @@ if (isset($_POST['submit'])) {
         $result = mysqli_num_rows($check_discount);
 
         if ($result > 0) {
-            $_SESSION['tf_existing'] = true;
+            $_SESSION['installment_existing'] = true;
             header('location: ../add.installment.dates.php');
 
         } else {

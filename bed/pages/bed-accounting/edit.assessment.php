@@ -17,7 +17,7 @@ $get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year
 $row_ay = mysqli_fetch_array($get_ay_id);
 $ay_id = $row_ay['ay_id'];
 
-$stud_id = $_GET['stud_id'];
+$assessed_id = $_GET['assessed_id'];
 ?>
 
 <!DOCTYPE html>
@@ -61,11 +61,17 @@ $stud_id = $_GET['stud_id'];
                             <div class="col-md-12">
                                 <div class="card card-purple shadow-lg">
                                     <?php
-                                        $get_studentInfo = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
-                                        LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
-                                        WHERE tbl_students.student_id = '$stud_id' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                        $get_tuitionInfo = mysqli_query($acc, "SELECT * FROM tbl_assessed_tf
+                                        LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
+                                        WHERE assessed_id = $assessed_id");
 
-                                        while ($row1 = mysqli_fetch_array($get_studentInfo)) {
+                                        while ($row = mysqli_fetch_array($get_tuitionInfo)) {
+                        
+                                            $get_studentInfo = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
+                                            LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
+                                            WHERE tbl_students.student_id = '$row[stud_id]' AND ay_id = '$row[ay_id]'") or die(mysqli_error($conn));
+
+                                            while ($row1 = mysqli_fetch_array($get_studentInfo)) {
                                     ?>
                                     <div class="card-header">
                                         <h3 class="card-title">Edit Assessed tuition for <b><?php echo $row1['fullname']?></b>
@@ -76,15 +82,11 @@ $stud_id = $_GET['stud_id'];
                                     <!-- form start -->
 
                                     <?php
-                                        $get_tuitionInfo = mysqli_query($acc, "SELECT * FROM tbl_tuition_fee
-                                        LEFT JOIN tbl_assessed_tf ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-                                        WHERE grade_level_id = '$row1[grade_level_id]' AND stud_id = '$stud_id'");
-
-                                        while ($row = mysqli_fetch_array($get_tuitionInfo)) {
+                                        
                                         
                                         ?>
 
-                                    <form action="userData/ctrl.editAssessment.php<?php echo '?stud_id=' . $stud_id; ?>" method="POST">
+                                    <form action="userData/ctrl.editAssessment.php<?php echo '?assessed_id=' . $assessed_id; ?>" method="POST">
                                         <div class="card-body">
                                             <div class="row">
                                             <div class="col-6 justify-content-center">
@@ -215,7 +217,7 @@ $stud_id = $_GET['stud_id'];
                                                         <?php
                                                             $discount_array = explode(",",$row['disc_id']);
 
-                                                            $discountSelect = mysqli_query($acc, "SELECT * FROM tbl_discounts WHERE ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                                            $discountSelect = mysqli_query($acc, "SELECT * FROM tbl_discounts WHERE ay_id = '$row[ay_id]'") or die(mysqli_error($conn));
                                                             while($row7 = mysqli_fetch_array($discountSelect)) {
 
                                                                 if ($row7['percent'] == '1') {
@@ -242,7 +244,7 @@ $stud_id = $_GET['stud_id'];
                                                     <h7><b>Trimestral Basis</b></h7>
                                                 </div>
                                                 <?php
-                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$row[ay_id]'");
                                                     while ($row1 = mysqli_fetch_array($get_dates)) {
 
                                                 ?>
@@ -296,7 +298,7 @@ $stud_id = $_GET['stud_id'];
                                                     <h7><b>Quarterly Basis</b></h7>
                                                 </div>
                                                 <?php
-                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
+                                                $get_dates = mysqli_query($acc, "SELECT * FROM tbl_installment_dates WHERE ay_id = '$row[ay_id]'");
                                                     while ($row1 = mysqli_fetch_array($get_dates)) {
 
                                                 ?>

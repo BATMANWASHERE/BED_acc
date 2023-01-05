@@ -24,12 +24,12 @@ if (isset($_POST['submit'])) {
         $result = mysqli_num_rows($check_discount);
 
         if ($result > 0) {
-            $_SESSION['disc_existing'] = true;
+            $_SESSION['discount_existing'] = true;
             header('location: ../edit.discount.php?disc_id=' . $disc_id);
 
         } else {
             $insert_discount = mysqli_query($acc, "UPDATE tbl_discounts SET ay_id = '$ay_id', discount = '$discount', discount_desc = '$discount_desc', percent = '$percent', discount_status = '$discount_status', updated_by = '$updated_by' WHERE disc_id = '$disc_id'") or die(mysqli_error($acc));
-            $_SESSION['success'] = true;
+            $_SESSION['update-success'] = true;
             header('location: ../edit.discount.php?disc_id=' . $disc_id);
 
         }

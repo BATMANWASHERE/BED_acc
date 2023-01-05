@@ -91,6 +91,7 @@ require '../../includes/bed-session.php';
 
     <!-- Footer and script -->
     <?php include '../../includes/bed-footer.php'; ?>
+    <?php include 'accountFooter/acc-footer.php'; ?>
 
 
 

@@ -17,7 +17,7 @@ $get_ay_id = mysqli_query($conn,"SELECT * FROM tbl_acadyears WHERE academic_year
 $row_ay = mysqli_fetch_array($get_ay_id);
 $ay_id = $row_ay['ay_id'];
 
-$stud_id = $_GET['stud_id'];
+$assessed_id = $_GET['assessed_id'];
 date_default_timezone_set('Asia/Manila');
 
 ?>
@@ -62,9 +62,28 @@ date_default_timezone_set('Asia/Manila');
                             <div class="col-md-8">
                                 <div class="card card-purple shadow-lg">
                                     <?php
+                                    $get_tuitionInfo = mysqli_query($acc, "SELECT *, tbl_assessed_tf.last_updated, tbl_assessed_tf.created_at, tbl_assessed_tf.updated_by FROM tbl_assessed_tf
+                                    LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
+                                    WHERE assessed_id = '$assessed_id'") or die(mysqli_error($acc));
+
+                                    while ($row = mysqli_fetch_array($get_tuitionInfo)) {
+
+                                        $discount_array = explode(",",$row['disc_id']);
+
+                                        $created_at = new DateTime($row['created_at']);
+                                        $last_updated = new DateTime($row['last_updated']);
+
+                                        $get_installment_dates = mysqli_query($acc,"SELECT * FROM tbl_installment_dates WHERE ay_id = '$row[ay_id]'");
+                                        $row2 = mysqli_fetch_array($get_installment_dates);
+
+                                        $first_quarter = new DateTime($row2['first_quarter']);
+                                        $second_quarter = new DateTime($row2['second_quarter']);
+                                        $third_quarter = new DateTime($row2['third_quarter']);
+                                        $fourth_quarter = new DateTime($row2['fourth_quarter']);
+
                                         $get_studentInfo = mysqli_query($conn, "SELECT *, CONCAT(tbl_students.student_lname, ', ', tbl_students.student_fname, ' ', tbl_students.student_mname) AS fullname FROM tbl_schoolyears
                                         LEFT JOIN tbl_students ON tbl_schoolyears.student_id = tbl_students.student_id
-                                        WHERE tbl_students.student_id = '$stud_id' AND ay_id = '$ay_id'") or die(mysqli_error($conn));
+                                        WHERE tbl_students.student_id = '$row[stud_id]' AND tbl_schoolyears.ay_id = '$row[ay_id]'") or die(mysqli_error($conn));
 
                                         while ($row3 = mysqli_fetch_array($get_studentInfo)) {
                                             $grade_ident = $row3['grade_level_id'];
@@ -77,28 +96,6 @@ date_default_timezone_set('Asia/Manila');
                                     <!-- /.card-header -->
 
                                     <!-- form start -->
-
-                                    <?php
-                                        $get_tuitionInfo = mysqli_query($acc, "SELECT *, tbl_assessed_tf.last_updated, tbl_assessed_tf.created_at, tbl_assessed_tf.updated_by FROM tbl_assessed_tf
-                                        LEFT JOIN tbl_tuition_fee ON tbl_assessed_tf.tf_id = tbl_tuition_fee.tf_id
-                                        WHERE stud_id = '$stud_id' AND tbl_assessed_tf.ay_id = '$ay_id'") or die(mysqli_error($acc));
-
-                                        while ($row = mysqli_fetch_array($get_tuitionInfo)) {
-
-                                            $discount_array = explode(",",$row['disc_id']);
-
-                                            $created_at = new DateTime($row['created_at']);
-                                            $last_updated = new DateTime($row['last_updated']);
-
-                                            $get_installment_dates = mysqli_query($acc,"SELECT * FROM tbl_installment_dates WHERE ay_id = '$ay_id'");
-                                            $row2 = mysqli_fetch_array($get_installment_dates);
-
-                                            $first_quarter = new DateTime($row2['first_quarter']);
-                                            $second_quarter = new DateTime($row2['second_quarter']);
-                                            $third_quarter = new DateTime($row2['third_quarter']);
-                                            $fourth_quarter = new DateTime($row2['fourth_quarter']);
-     
-                                        ?>
                                     <form method="POST">
                                         <div class="card-body">
                                             
@@ -122,7 +119,7 @@ date_default_timezone_set('Asia/Manila');
                                                         <td style="text-align: right;"><?php echo number_format($row['upon_enrollment_quar'], 2);?></td>
                                                         </tr>
                                                         <?php
-                                                             if (!empty($discount_array)) {
+                                                             if (!empty($row['disc_id'])) {
 
                                                                 $cash_basis = $row['cash_basis'];
                                                                 $upon_enrollment = $row['upon_enrollment_quar'];
@@ -255,7 +252,7 @@ date_default_timezone_set('Asia/Manila');
 
                                         <div class="card-footer">
                                         <?php
-                                                if ($_SESSION['role'] == "Accounting") {
+                                                if ($_SESSION['role'] == "Accounting" || $_SESSION['role'] == "Admission") {
                                             ?>
                                             <a href="list.assess.php" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-check"></i>
@@ -265,11 +262,17 @@ date_default_timezone_set('Asia/Manila');
                                                 <i class="fa fa-file-pdf"></i>
                                                 Reg Form
                                             </a>
+                                            <?php
+                                            if ($_SESSION['role'] == "Accounting") {
+                                            ?>
                                             <a href="add.payment.php<?php echo '?stud_id=' . $stud_id; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-edit"></i>
                                                 Add Payment Status
                                             </a>
-                                            <a href="edit.assessment.php<?php echo '?stud_id=' . $stud_id; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
+                                            <?php
+                                            }
+                                            ?>
+                                            <a href="edit.assessment.php<?php echo '?assessed_id=' . $assessed_id; ?>" type="button" class="btn bg-purple text-sm p-2 mb-md-2">
                                                 <i class="fa fa-edit"></i>
                                                 Edit Assessment
                                             </a>
